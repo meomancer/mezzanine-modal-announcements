@@ -22,6 +22,7 @@ class SiteAnnouncementModelForm(forms.ModelForm):
 
     class Meta:
         model = SiteAnnouncement
+        fields = "__all__"
 
     def clean_weekdays(self):
         weekdays = self.cleaned_data['weekdays']
