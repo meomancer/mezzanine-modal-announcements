@@ -1,56 +1,34 @@
 # -*- coding: utf-8 -*-
-from south.utils import datetime_utils as datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import migrations, models
+import mezzanine.core.fields
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'SiteAnnouncement'
-        db.create_table(u'modal_announcements_siteannouncement', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['sites.Site'])),
-            ('content', self.gf('mezzanine.core.fields.RichTextField')()),
-            ('_order', self.gf('django.db.models.fields.IntegerField')(null=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('deactivate', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('start_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
-            ('end_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
-            ('start_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('end_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('weekdays', self.gf('django.db.models.fields.CharField')(max_length=14, blank=True)),
-        ))
-        db.send_create_signal(u'modal_announcements', ['SiteAnnouncement'])
+    dependencies = [
+        ('sites', '0001_initial'),
+    ]
 
-
-    def backwards(self, orm):
-        # Deleting model 'SiteAnnouncement'
-        db.delete_table(u'modal_announcements_siteannouncement')
-
-
-    models = {
-        u'modal_announcements.siteannouncement': {
-            'Meta': {'ordering': "(u'_order',)", 'object_name': 'SiteAnnouncement'},
-            '_order': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
-            'content': ('mezzanine.core.fields.RichTextField', [], {}),
-            'deactivate': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'end_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'site': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['sites.Site']"}),
-            'start_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'start_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'weekdays': ('django.db.models.fields.CharField', [], {'max_length': '14', 'blank': 'True'})
-        },
-        u'sites.site': {
-            'Meta': {'ordering': "(u'domain',)", 'object_name': 'Site', 'db_table': "u'django_site'"},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        }
-    }
-
-    complete_apps = ['modal_announcements']
+    operations = [
+        migrations.CreateModel(
+            name='SiteAnnouncement',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('content', mezzanine.core.fields.RichTextField(verbose_name='Content')),
+                ('_order', mezzanine.core.fields.OrderField(null=True, verbose_name='Order')),
+                ('title', models.CharField(max_length=200)),
+                ('deactivate', models.BooleanField(default=False, help_text=b'If checked this modal will not show')),
+                ('start_time', models.TimeField(help_text=b'If present the modal will only show after this time', null=True, blank=True)),
+                ('end_time', models.TimeField(help_text=b'If present the model will only show before this time', null=True, blank=True)),
+                ('start_date', models.DateField(help_text=b'If present the modal will only show on or after this date', null=True, blank=True)),
+                ('end_date', models.DateField(help_text=b'If present the modal will only show on or before this date', null=True, blank=True)),
+                ('weekdays', models.CharField(help_text=b'The announcement will only show on the selected days of the week, hold ctrl (cmd on a mac) to select more than one.  If blank the announcement will be eligible to show on any day of the week', max_length=14, blank=True)),
+                ('site', models.ForeignKey(editable=False, to='sites.Site')),
+            ],
+            options={
+                'ordering': ('_order',),
+            },
+        ),
+    ]
